@@ -2,20 +2,41 @@
 
 A GQL Service passes queries to another GQL service, namely a Prisma service.
 
-### Notes
+### Launching Locally
 
-- There are multiple services at play:
+There are multiple services at play:
 
   1.  A Postgres database
   2.  A Prisma Server
   3.  A Prisma API
-  4.  A general, unnamed GQL Service built on Node that we call our Passthrough API
+  4.  A GQL Service built on Node that we call our Passthrough API
 
-- To run them all locally:
+To run them all locally:
 
-  1.  `cd prisma && docker-compose up -d` to deploy a Postgres database and Prisma Server
-  2.  `cd prisma && prisma deploy` to deploy our Prisma API
-  3.  `yarn dev` to start the Passthrough API
+```
+cd prisma && docker-compose up -d
+```
+
+To deploy a Postgres database and Prisma Server
+
+```
+cd prisma && prisma deploy
+```
+
+To deploy our Prisma API
+
+```
+yarn dev
+```
+To start the Passthrough API
+
+```
+yarn playground
+```
+
+In a separate terminal, to play with queries.
+
+### Notes
 
 - There are some TypeScript type errors in the Node GQL service. It appears to be a bug. I have not investigated. Links to Github issues in code. Work around was to use `any`. Of course not good, removes type safety.
 
