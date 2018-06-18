@@ -6,35 +6,34 @@ A GQL Service passes queries to another GQL service, namely a Prisma service.
 
 There are multiple services at play:
 
-  1.  A Postgres database
-  2.  A Prisma Server
-  3.  A Prisma API
-  4.  A GQL Service built on Node that we call our Passthrough API
+1.  A Postgres database
+2.  A Prisma Server
+3.  A Prisma API
+4.  A GQL Service built on Node that we call our Passthrough API
 
-To run them all locally:
+To deploy a Postgres database and Prisma Server:
 
 ```
 cd prisma && docker-compose up -d
 ```
 
-To deploy a Postgres database and Prisma Server
+To deploy our Prisma API:
 
 ```
-cd prisma && prisma deploy
+cd prisma && prisma deploy:
 ```
 
-To deploy our Prisma API
+To start the Passthrough API:
 
 ```
 yarn dev
 ```
-To start the Passthrough API
+
+In a separate terminal, to play with queries:
 
 ```
 yarn playground
 ```
-
-In a separate terminal, to play with queries.
 
 ### Notes
 
@@ -46,10 +45,14 @@ In a separate terminal, to play with queries.
 
 - There is no real magic about the intrespection under the covers. When the Playground boots for instance it makes a call to each listed endpoint to fetch the schema. It then uses the response to build a UI for exploring that schema. Here is an introspection query (simple one) with curl:
 
-  ```
-  curl http://localhost:4000 -H 'content-type: application/json' --data '{"operationName":null,"variables":{},"query":"{__schema{types{name}}}"}' | jq
-  ```
+```
+curl http://localhost:4000 -H 'content-type: application/json' --data '{"operationName":null,"variables":{},"query":"{\_\_schema{types{name}}}"}' | jq
+```
 
-  ```
-  curl http://localhost:4466/passthrough-core/dev -H 'content-type: application/json' --data '{"operationName":null,"variables":{},"query":"{__schema{types{name}}}"}' | jq
-  ```
+```
+curl http://localhost:4466/passthrough-core/dev -H 'content-type: application/json' --data '{"operationName":null,"variables":{},"query":"{\_\_schema{types{name}}}"}' | jq
+```
+
+```
+
+```
