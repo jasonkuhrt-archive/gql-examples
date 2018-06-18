@@ -1,0 +1,11 @@
+projects:
+  gateway:
+    schemaPath: source/schema.graphql
+    extensions:
+      endpoints:
+        dev: 'http://localhost:4000'
+  core:
+    schemaPath: prisma/schemas/prisma.graphql
+    extensions:
+      endpoints:
+        dev: 'http://localhost:4466/passthrough-core/dev'
