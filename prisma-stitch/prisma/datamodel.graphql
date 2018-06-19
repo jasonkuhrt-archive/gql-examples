@@ -1,0 +1,21 @@
+type User {
+  id: ID! @unique
+  email: String! @unique
+  channels: [Channel!]!
+  messages: [Message!]!
+}
+
+type Channel {
+  id: ID! @unique
+  created_at: DateTime!
+  users: [User!]!
+  messages: [Message!]!
+}
+
+type Message {
+  id: ID! @unique
+  sent_at: DateTime!
+  channel: Channel!
+  content: String!
+  author: User!
+}

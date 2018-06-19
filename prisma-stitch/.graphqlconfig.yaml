@@ -1,0 +1,11 @@
+projects:
+  gateway:
+    schemaPath: source/TypeDefs/Main.graphql
+    extensions:
+      endpoints:
+        dev: 'http://localhost:4000'
+  core:
+    schemaPath: source/TypeDefs/Core.graphql
+    extensions:
+      endpoints:
+        dev: 'http://localhost:4466/core/dev'

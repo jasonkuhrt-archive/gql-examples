@@ -1,0 +1,11 @@
+# import User from "./Core.graphql"
+# import Message from "./Core.graphql"
+# import Channel from "./Core.graphql"
+
+type Query {
+  hello(name: String): User
+}
+
+type Mutation {
+  signup(email: string!): User!
+}
