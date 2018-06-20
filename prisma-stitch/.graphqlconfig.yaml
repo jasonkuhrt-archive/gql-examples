@@ -9,3 +9,8 @@ projects:
     extensions:
       endpoints:
         dev: 'http://localhost:4466/core/dev'
+      codegen: 
+        generator: prisma-binding
+        language: typescript
+        output:
+          binding: prisma.ts

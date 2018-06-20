@@ -1,22 +1,32 @@
 import * as GQLImport from "graphql-import"
 import * as Yoga from "graphql-yoga"
+import * as YogaTypes from "graphql-yoga/dist/types"
+import * as PrismaBinding from "prisma-binding"
+import * as Context from "./Context"
+import * as Schema from "./Schema"
 
-const typeDefs = GQLImport.importSchema(__dirname + "/TypeDefs/Main.graphql")
+const typeDefs = GQLImport.importSchema(__dirname + "/Schema.graphql")
+const port = 4000
 
-const resolvers = {
+const resolvers: YogaTypes.IResolvers<Context.Context> = {
   Query: {
-    hello: (_: any, args: any) => {
-      if (args.name) {
-        return args.name.length
-      } else {
-        return "someone..."
-      }
+    users: PrismaBinding.forwardTo("core"),
+    user: PrismaBinding.forwardTo("core"),
+  },
+  Mutation: {
+    signup: (source, args: Schema.SignupMutationArgs, ctx, info) => {
+      console.log({ source, ctx })
+      return ctx.core.mutation.createUser({ data: args }, info)
     },
   },
 }
 
-const server = new Yoga.GraphQLServer({ typeDefs, resolvers })
+const server = new Yoga.GraphQLServer({
+  typeDefs,
+  resolvers,
+  context: Context.create,
+})
 
-server.start().then(server => {
+server.start({ port }).then(server => {
   console.log("started server at %s", JSON.stringify(server.address()))
 })

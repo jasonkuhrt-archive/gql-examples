@@ -8,3 +8,5 @@ This shows how a gateway can work with the schema of an underlying GQL service, 
 
 - Dec 12, 2017
   [GraphQL Schema Stitching explained: Schema Delegation](https://blog.graph.cool/graphql-schema-stitching-explained-schema-delegation-4c6caf468405)
+- https://github.com/prismagraphql/prisma-binding
+- https://oss.prisma.io/content/GraphQL-CLI/08-Codegen.html
