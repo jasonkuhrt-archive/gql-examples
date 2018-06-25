@@ -3,6 +3,7 @@ type User {
   email: String! @unique
   channels: [Channel!]!
   messages: [Message!]!
+  deactivated: Boolean! @default(value: "false")
 }
 
 type Channel {
