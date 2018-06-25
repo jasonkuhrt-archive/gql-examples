@@ -10,7 +10,13 @@ const port = 4000
 
 const resolvers: YogaTypes.IResolvers<Context.Context> = {
   Query: {
-    users: PrismaBinding.forwardTo("core"),
+    users: (_, args, ctx, info) => {
+      return ctx.core.query.users(args, info)
+    },
+    // The following is a short hand. It could be written more verbosely like:
+    // user: (_, args, ctx, info) => {
+    //   return ctx.core.query.users(args, info)
+    // }
     user: PrismaBinding.forwardTo("core"),
   },
   Mutation: {
