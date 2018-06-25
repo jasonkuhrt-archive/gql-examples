@@ -1,6 +1,6 @@
 # import User, Message, Channel, Query.*, Subscription.* from "./Remotes/Core.graphql"
 
-# TODO not expose Query.node
+# TODO do not expose Query.node
 
 type Mutation {
   signup(email: String!): User!

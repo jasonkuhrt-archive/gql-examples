@@ -18,7 +18,12 @@ const resolvers: YogaTypes.IResolvers<Context.Context> = {
       console.log({ source, ctx })
       return ctx.core.mutation.createUser({ data: args }, info)
     },
+    // Deactivate
+    //   Add a deactivated field to datamodel
+    //   When querying users, check that they aren't deactivated
+    // SendMessage
   },
+  // Subscription (forwardTo)
 }
 
 const server = new Yoga.GraphQLServer({
