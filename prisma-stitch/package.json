@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon --exec ts-node source/Main.ts --ext graphql,ts",
     "playground": "yarn graphql playground",
-    "build:types": "gql-gen --schema http://localhost:4000 --template typescript --out ./source/SchemaTypes.ts"
+    "build:types": "gql-gen --schema http://localhost:4000 --template typescript --out ./source/Schema/Types.ts"
   },
   "dependencies": {
     "apollo-link-http": "^1.5.4",

@@ -1,6 +1,6 @@
 projects:
   gateway:
-    schemaPath: source/TypeDefs/Main.graphql
+    schemaPath: source/Schema/Main.graphql
     extensions:
       endpoints:
         dev: 'http://localhost:4000'
