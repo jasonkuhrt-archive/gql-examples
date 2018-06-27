@@ -5,7 +5,7 @@ projects:
       endpoints:
         dev: 'http://localhost:4000'
   core:
-    schemaPath: source/TypeDefs/Core.graphql
+    schemaPath: source/Schema/Remotes/Core.graphql
     extensions:
       endpoints:
         dev: 'http://localhost:4466/core/dev'
@@ -13,4 +13,4 @@ projects:
         generator: prisma-binding
         language: typescript
         output:
-          binding: prisma.ts
+          binding: source/Schema/Remotes/Core.ts
