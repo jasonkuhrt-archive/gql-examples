@@ -1,5 +1,6 @@
 import * as YogaTypes from "graphql-yoga/dist/types"
 import * as PrismaBinding from "prisma-binding"
+import * as Context from "./Context"
 import * as Schema from "./Schema"
 
 type Resolvers = YogaTypes.IResolvers<Context.Context>

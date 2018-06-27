@@ -1,4 +1,4 @@
-import * as Core from "./Remotes/Core"
+import * as Core from "./Schema/Remotes/Core"
 
 type Context = {
   core: Core.Prisma
