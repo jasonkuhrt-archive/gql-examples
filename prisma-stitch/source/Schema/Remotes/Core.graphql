@@ -1,5 +1,5 @@
 # source: http://localhost:4466/core/dev
-# timestamp: Mon Jun 18 2018 23:28:33 GMT-0400 (EDT)
+# timestamp: Tue Jun 26 2018 22:40:17 GMT-0400 (EDT)
 
 type AggregateChannel {
   count: Int!
@@ -634,6 +634,7 @@ type User implements Node {
   email: String!
   channels(where: ChannelWhereInput, orderBy: ChannelOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Channel!]
   messages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message!]
+  deactivated: Boolean!
 }
 
 """A connection to a list of items."""
@@ -648,6 +649,7 @@ type UserConnection {
 
 input UserCreateInput {
   email: String!
+  deactivated: Boolean
   channels: ChannelCreateManyWithoutUsersInput
   messages: MessageCreateManyWithoutAuthorInput
 }
@@ -664,11 +666,13 @@ input UserCreateOneWithoutMessagesInput {
 
 input UserCreateWithoutChannelsInput {
   email: String!
+  deactivated: Boolean
   messages: MessageCreateManyWithoutAuthorInput
 }
 
 input UserCreateWithoutMessagesInput {
   email: String!
+  deactivated: Boolean
   channels: ChannelCreateManyWithoutUsersInput
 }
 
@@ -686,6 +690,8 @@ enum UserOrderByInput {
   id_DESC
   email_ASC
   email_DESC
+  deactivated_ASC
+  deactivated_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -695,6 +701,7 @@ enum UserOrderByInput {
 type UserPreviousValues {
   id: ID!
   email: String!
+  deactivated: Boolean!
 }
 
 type UserSubscriptionPayload {
@@ -738,6 +745,7 @@ input UserSubscriptionWhereInput {
 
 input UserUpdateInput {
   email: String
+  deactivated: Boolean
   channels: ChannelUpdateManyWithoutUsersInput
   messages: MessageUpdateManyWithoutAuthorInput
 }
@@ -761,11 +769,13 @@ input UserUpdateOneWithoutMessagesInput {
 
 input UserUpdateWithoutChannelsDataInput {
   email: String
+  deactivated: Boolean
   messages: MessageUpdateManyWithoutAuthorInput
 }
 
 input UserUpdateWithoutMessagesDataInput {
   email: String
+  deactivated: Boolean
   channels: ChannelUpdateManyWithoutUsersInput
 }
 
@@ -874,6 +884,10 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   email_not_ends_with: String
+  deactivated: Boolean
+
+  """All values that are not equal to given value."""
+  deactivated_not: Boolean
   channels_every: ChannelWhereInput
   channels_some: ChannelWhereInput
   channels_none: ChannelWhereInput
