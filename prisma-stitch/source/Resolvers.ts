@@ -7,6 +7,8 @@ type Resolvers = YogaTypes.IResolvers<Context.Context>
 
 const resolvers: Resolvers = {
   Query: {
+    // TODO
+    // When querying users, check that they aren't deactivated
     users: (_, args, ctx, info) => {
       return ctx.core.query.users(args, info)
     },
@@ -21,11 +23,12 @@ const resolvers: Resolvers = {
       console.log({ source, ctx })
       return ctx.core.mutation.createUser({ data: args }, info)
     },
+    // TODO
     // Deactivate
-    //   Add a deactivated field to datamodel
-    //   When querying users, check that they aren't deactivated
+    // TODO
     // SendMessage
   },
+  // TODO
   // Subscription (forwardTo)
 }
 
