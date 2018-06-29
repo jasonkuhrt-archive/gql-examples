@@ -4,6 +4,6 @@
 
 type Mutation {
   signup(email: String!): User!
-  deactivate(id: ID!): User!
+  deactivateByEmail(email: String!): User!
   sendMessage(content: String!): String
 }

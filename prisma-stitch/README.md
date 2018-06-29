@@ -1,5 +1,11 @@
 # prisma-stitch
 
+TODO:
+
+- [ ] Augment user with phone number field to better show how reactivating preserves data
+- [ ] Investigate a better way to type args
+- [ ] See if we can make the playground read from query Journey on boot?
+
 ### About
 
 This shows how a gateway can work with the schema of an underlying GQL service, such as Prisma (this case). Unlike a simple passthrough we merge schema features of the local and remote server.
@@ -48,6 +54,19 @@ mutation createUser($email: String!) {
   }
 }
 ```
+### Observations
+
+* The app code is organized by function. Namely the schema is in one place while the resolvers are in another. A more modular approach can be taken, but it is not explored here.
+* A passthrough for a resolver could look like either of the following, we just did not have any use-cases for this in our example:
+
+```ts
+user: (_, args, ctx, info) => {
+    return ctx.core.query.users(args, info)
+}
+```
+```ts
+user: PrismaBinding.forwardTo("core"),
+```
 
 ### References
 
@@ -69,3 +88,60 @@ It is possible however with another transformation library
 The issue there is that it is not done, not active, has a few old open issues. An attempt to use it yielded a type error, which I reported but have no fix for yet:
 
 - https://github.com/prismagraphql/graphql-transform-schema/issues/15
+
+### Query Journey
+
+```
+query getUsers {
+  users {
+    id
+    email
+  }
+}
+
+mutation createUser($email: String!) {
+  signup(email: $email) {
+    id
+    email
+  }
+}
+
+
+
+subscription observeNewUsers {
+  user(where:{mutation_in:[CREATED]}) {
+    updatedFields
+    mutation
+    previousValues {
+      id
+      email
+    }
+    node {
+      id
+      email      
+    }
+  }
+}
+
+# Queries to test the CRUD of a user
+mutation signupJason {
+  signup(email: "jasonkuhrt@me.com") {
+    id
+    email
+  }
+}
+
+query getJason {
+  user(where: {email: "jasonkuhrt@me.com"}) {
+    id
+    email
+  }
+}
+
+mutation deactivateJason {
+  deactivateByEmail(email:"jasonkuhrt@me.com") {
+    id
+    email
+  }
+}
+```

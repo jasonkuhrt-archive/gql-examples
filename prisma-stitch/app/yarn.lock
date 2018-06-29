@@ -128,6 +128,10 @@
   version "1.13.1"
   resolved "https://registry.yarnpkg.com/@types/prettier/-/prettier-1.13.1.tgz#5dd359398de96863a0629156f382913a06ebe013"
 
+"@types/ramda@^0.25.34":
+  version "0.25.34"
+  resolved "https://registry.yarnpkg.com/@types/ramda/-/ramda-0.25.34.tgz#6fae4a009123c2db810711b416da9b597cc5c54c"
+
 "@types/range-parser@*":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.2.tgz#fa8e1ad1d474688a757140c91de6dace6f4abc8d"
@@ -3265,6 +3269,10 @@ qs@6.5.2, qs@~6.5.1:
 querystring@0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/querystring/-/querystring-0.2.0.tgz#b209849203bb25df820da756e747005878521620"
+
+ramda@^0.25.0:
+  version "0.25.0"
+  resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.25.0.tgz#8fdf68231cffa90bc2f9460390a0cb74a29b29a9"
 
 range-parser@~1.2.0:
   version "1.2.0"
