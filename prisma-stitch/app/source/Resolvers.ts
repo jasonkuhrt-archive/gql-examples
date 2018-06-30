@@ -14,7 +14,7 @@ const resolvers: Resolvers = {
     },
     user: (_, args, ctx, info) => {
       return ctx.core.query
-        .users(F.mergeDeepRight(args, { wheree: { deactivated: false } }), info)
+        .users(F.mergeDeepRight(args, { where: { deactivated: false } }), info)
         .then(users => users[0] || null)
     },
   },
