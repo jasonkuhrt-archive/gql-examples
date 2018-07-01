@@ -1,9 +1,12 @@
-# import User, Message, Channel, Query.*, Subscription.* from "./Remotes/Core.graphql"
-
-# TODO do not expose Query.node
+# import User, Message, Channel, Query.*, Subscription.*, Mutation.createChannel from "./Remotes/Core.graphql"
 
 type Mutation {
   signup(email: String!): User!
   deactivateByEmail(email: String!): User!
-  sendMessage(content: String!): String
+  sendMessage(
+    content: String!
+    authorId: ID!
+    channelId: ID!
+    sentAt: DateTime!
+  ): Message!
 }
