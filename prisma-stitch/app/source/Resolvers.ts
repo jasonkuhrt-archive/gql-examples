@@ -83,9 +83,20 @@ const resolvers: Resolvers = {
       )
     },
     createChannel: PrismaBinding.forwardTo("core"),
+    updateUser: PrismaBinding.forwardTo("core"),
   },
-  // TODO
-  // Subscription (forwardTo)
+  Subscription: {
+    message: {
+      subscribe: async (_, args, ctx, info) => {
+        return ctx.core.subscription.user(args, info)
+      },
+    },
+    channel: {
+      subscribe: async (_, args, ctx, info) => {
+        return ctx.core.subscription.channel(args, info)
+      },
+    },
+  },
 }
 
 export { resolvers }

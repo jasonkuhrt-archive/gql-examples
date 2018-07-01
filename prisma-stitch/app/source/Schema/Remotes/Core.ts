@@ -702,6 +702,7 @@ type Subscription {
 type User implements Node {
   id: ID!
   email: String!
+  phoneNumber: String
   channels(where: ChannelWhereInput, orderBy: ChannelOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Channel!]
   messages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message!]
   deactivated: Boolean!
@@ -719,6 +720,7 @@ type UserConnection {
 
 input UserCreateInput {
   email: String!
+  phoneNumber: String
   deactivated: Boolean
   channels: ChannelCreateManyWithoutUsersInput
   messages: MessageCreateManyWithoutAuthorInput
@@ -736,12 +738,14 @@ input UserCreateOneWithoutMessagesInput {
 
 input UserCreateWithoutChannelsInput {
   email: String!
+  phoneNumber: String
   deactivated: Boolean
   messages: MessageCreateManyWithoutAuthorInput
 }
 
 input UserCreateWithoutMessagesInput {
   email: String!
+  phoneNumber: String
   deactivated: Boolean
   channels: ChannelCreateManyWithoutUsersInput
 }
@@ -760,6 +764,8 @@ enum UserOrderByInput {
   id_DESC
   email_ASC
   email_DESC
+  phoneNumber_ASC
+  phoneNumber_DESC
   deactivated_ASC
   deactivated_DESC
   updatedAt_ASC
@@ -771,6 +777,7 @@ enum UserOrderByInput {
 type UserPreviousValues {
   id: ID!
   email: String!
+  phoneNumber: String
   deactivated: Boolean!
 }
 
@@ -815,6 +822,7 @@ input UserSubscriptionWhereInput {
 
 input UserUpdateInput {
   email: String
+  phoneNumber: String
   deactivated: Boolean
   channels: ChannelUpdateManyWithoutUsersInput
   messages: MessageUpdateManyWithoutAuthorInput
@@ -839,12 +847,14 @@ input UserUpdateOneWithoutMessagesInput {
 
 input UserUpdateWithoutChannelsDataInput {
   email: String
+  phoneNumber: String
   deactivated: Boolean
   messages: MessageUpdateManyWithoutAuthorInput
 }
 
 input UserUpdateWithoutMessagesDataInput {
   email: String
+  phoneNumber: String
   deactivated: Boolean
   channels: ChannelUpdateManyWithoutUsersInput
 }
@@ -954,6 +964,46 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   email_not_ends_with: String
+  phoneNumber: String
+
+  """All values that are not equal to given value."""
+  phoneNumber_not: String
+
+  """All values that are contained in given list."""
+  phoneNumber_in: [String!]
+
+  """All values that are not contained in given list."""
+  phoneNumber_not_in: [String!]
+
+  """All values less than the given value."""
+  phoneNumber_lt: String
+
+  """All values less than or equal the given value."""
+  phoneNumber_lte: String
+
+  """All values greater than the given value."""
+  phoneNumber_gt: String
+
+  """All values greater than or equal the given value."""
+  phoneNumber_gte: String
+
+  """All values containing the given string."""
+  phoneNumber_contains: String
+
+  """All values not containing the given string."""
+  phoneNumber_not_contains: String
+
+  """All values starting with the given string."""
+  phoneNumber_starts_with: String
+
+  """All values not starting with the given string."""
+  phoneNumber_not_starts_with: String
+
+  """All values ending with the given string."""
+  phoneNumber_ends_with: String
+
+  """All values not ending with the given string."""
+  phoneNumber_not_ends_with: String
   deactivated: Boolean
 
   """All values that are not equal to given value."""
@@ -982,6 +1032,8 @@ export type UserOrderByInput =   'id_ASC' |
   'id_DESC' |
   'email_ASC' |
   'email_DESC' |
+  'phoneNumber_ASC' |
+  'phoneNumber_DESC' |
   'deactivated_ASC' |
   'deactivated_DESC' |
   'updatedAt_ASC' |
@@ -1015,6 +1067,7 @@ export type MutationType =   'CREATED' |
 
 export interface UserCreateWithoutChannelsInput {
   email: String
+  phoneNumber?: String
   deactivated?: Boolean
   messages?: MessageCreateManyWithoutAuthorInput
 }
@@ -1051,6 +1104,20 @@ export interface UserWhereInput {
   email_not_starts_with?: String
   email_ends_with?: String
   email_not_ends_with?: String
+  phoneNumber?: String
+  phoneNumber_not?: String
+  phoneNumber_in?: String[] | String
+  phoneNumber_not_in?: String[] | String
+  phoneNumber_lt?: String
+  phoneNumber_lte?: String
+  phoneNumber_gt?: String
+  phoneNumber_gte?: String
+  phoneNumber_contains?: String
+  phoneNumber_not_contains?: String
+  phoneNumber_starts_with?: String
+  phoneNumber_not_starts_with?: String
+  phoneNumber_ends_with?: String
+  phoneNumber_not_ends_with?: String
   deactivated?: Boolean
   deactivated_not?: Boolean
   channels_every?: ChannelWhereInput
@@ -1063,6 +1130,7 @@ export interface UserWhereInput {
 
 export interface UserUpdateInput {
   email?: String
+  phoneNumber?: String
   deactivated?: Boolean
   channels?: ChannelUpdateManyWithoutUsersInput
   messages?: MessageUpdateManyWithoutAuthorInput
@@ -1140,6 +1208,7 @@ export interface ChannelUpdateManyWithoutUsersInput {
 
 export interface UserCreateWithoutMessagesInput {
   email: String
+  phoneNumber?: String
   deactivated?: Boolean
   channels?: ChannelCreateManyWithoutUsersInput
 }
@@ -1243,6 +1312,7 @@ export interface MessageUpdateWithoutAuthorDataInput {
 
 export interface UserUpdateWithoutChannelsDataInput {
   email?: String
+  phoneNumber?: String
   deactivated?: Boolean
   messages?: MessageUpdateManyWithoutAuthorInput
 }
@@ -1359,6 +1429,7 @@ export interface MessageUpdateWithoutChannelDataInput {
 
 export interface UserCreateInput {
   email: String
+  phoneNumber?: String
   deactivated?: Boolean
   channels?: ChannelCreateManyWithoutUsersInput
   messages?: MessageCreateManyWithoutAuthorInput
@@ -1377,6 +1448,7 @@ export interface UserUpsertWithoutMessagesInput {
 
 export interface UserUpdateWithoutMessagesDataInput {
   email?: String
+  phoneNumber?: String
   deactivated?: Boolean
   channels?: ChannelUpdateManyWithoutUsersInput
 }
@@ -1450,6 +1522,7 @@ export interface UserConnection {
 export interface User extends Node {
   id: ID_Output
   email: String
+  phoneNumber?: String
   channels?: Channel[]
   messages?: Message[]
   deactivated: Boolean
@@ -1521,6 +1594,7 @@ export interface AggregateUser {
 export interface UserPreviousValues {
   id: ID_Output
   email: String
+  phoneNumber?: String
   deactivated: Boolean
 }
 

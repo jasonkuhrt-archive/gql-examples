@@ -8,13 +8,15 @@
   - [Use Schema Transform to hide `User.deactivated` from Gateway](#use-schema-transform-to-hide-userdeactivated-from-gateway)
   - [Typing logic in resovlers](#typing-logic-in-resovlers)
   - [Transform workflow](#transform-workflow)
+  - [Cannot subscribe to upserts](#cannot-subscribe-to-upserts)
+  - [Subscription with relation in where clause not working](#subscription-with-relation-in-where-clause-not-working)
 - [Query Journey](#query-journey)
   - [Observe new users](#observe-new-users)
+  - [Channel observation](#channel-observation)
 - [References](#references)
 
 TODO:
 
-- [ ] Augment user with phone number field to better show how reactivating preserves data
 - [ ] Investigate a better way to type args
 - [ ] See if we can make the playground read from query Journey on boot?
 - [ ] Rename `sent_at` field in `core` schema to `sentAt`. Observe how data is migrated.
@@ -33,7 +35,7 @@ This shows how a gateway can work with the schema of an underlying GQL service, 
   - TODO Certain fields on certain types are stripped away in the Gateway schema like `User.deactivated`.
 - Logical API design at the gateway level delegating to CRUD APIs
 - SDK for remote db microservice is generated using `graphql-bindings`
-- Operation delegation via said SDK
+- Mutation, Query, and Subscription operations delegation via said SDK
 - Schema transform in Gateway to filter out some Query fields
 - Example of using Prisma [nested mutations](https://www.prisma.io/docs/reference/prisma-api/mutations-ol0yuoz6go#nested-mutations) feature
 
@@ -92,6 +94,13 @@ F.mergeDeepRight(args, { wheree: { deaactivated: false } })
 
 * https://github.com/apollographql/graphql-tools/issues/874
 
+#### Cannot subscribe to upserts
+
+* https://github.com/prismagraphql/prisma/issues/2532
+
+#### Subscription with relation in where clause not working
+
+* https://github.com/prismagraphql/graphql-yoga/issues/383
 
 ### Query Journey
 
@@ -169,6 +178,62 @@ subscription observeNewUsers {
       id
       email
     }
+  }
+}
+```
+
+#### Channel observation
+
+Directly on Prisma:
+
+```graphql
+subscription watchChan {
+  message(
+    where: {
+      AND: {
+        mutation_in: [CREATED, UPDATED, DELETED],
+        node: {
+          channel:{
+            id: "cjj0uh08i00270703fgniuq2a"            
+          }
+        }
+      }
+    }
+  ) {
+    mutation,
+    updatedFields,
+    node{
+      id
+      content    
+    }
+  }
+```
+```graphql
+mutation fooMsg {
+  createMessage(
+    data: {
+      content:"b",
+      sent_at:"2018-06-30T03:20:25.044Z",
+      channel: {
+        connect: {
+          id:"cjj0uh08i00270703fgniuq2a"
+        }
+      }
+      author: {
+        connect: {
+          id:"cjimkrhxu000l08884zwbfsrg"
+        }
+      }
+    }
+  ) {
+    id
+    content
+    channel {
+      id
+      users {
+        id
+      }
+    }    
   }
 }
 ```
