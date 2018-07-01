@@ -17,6 +17,7 @@ TODO:
 - [ ] Augment user with phone number field to better show how reactivating preserves data
 - [ ] Investigate a better way to type args
 - [ ] See if we can make the playground read from query Journey on boot?
+- [ ] Rename `sent_at` field in `core` schema to `sentAt`. Observe how data is migrated.
 
 ### About
 
