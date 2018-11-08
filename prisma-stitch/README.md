@@ -1,6 +1,11 @@
 
-# prisma-stitch <!-- omit in toc -->
+# Prisma Stitch Demo <!-- omit in toc -->
 
+This is a demo showing a Prisma Service being fronted by a GraphQL Gateway.
+
+Prisma v1.20
+
+- [Quickstart](#quickstart)
 - [About](#about)
 - [Features](#features)
 - [Observations](#observations)
@@ -14,12 +19,48 @@
   - [Observe new users](#observe-new-users)
   - [Channel observation](#channel-observation)
 - [References](#references)
+- [TODO](#todo)
 
-TODO:
+### Quickstart
 
-- [ ] Investigate a better way to type args
-- [ ] See if we can make the playground read from query Journey on boot?
-- [ ] Rename `sent_at` field in `core` schema to `sentAt`. Observe how data is migrated.
+First ensure you have the following globally installed:
+
+```
+brew tap prisma/prisma
+brew install prisma
+```
+```
+yarn global add graphql-cli
+```
+
+Its possible to install prisma from npm too:
+
+```
+yarn global add prisma
+```
+
+Get the Prisma Server (what runs Prisma Services) running first:
+
+```
+cd prisma && docker-compose up
+```
+
+Once up you may explore its management API:
+
+```
+open http://localhost:4466/management
+```
+
+In another terminal (or run docker-compose with `--detach`) deploy the prisma service:
+
+```
+prisma deploy
+```
+
+```
+yarn && yarn dev
+```
+
 
 ### About
 
@@ -131,7 +172,7 @@ subscription observeNewUsers {
     }
     node {
       id
-      email      
+      email
     }
   }
 }
@@ -194,7 +235,7 @@ subscription watchChan {
         mutation_in: [CREATED, UPDATED, DELETED],
         node: {
           channel:{
-            id: "cjj0uh08i00270703fgniuq2a"            
+            id: "cjj0uh08i00270703fgniuq2a"
           }
         }
       }
@@ -204,7 +245,7 @@ subscription watchChan {
     updatedFields,
     node{
       id
-      content    
+      content
     }
   }
 ```
@@ -233,7 +274,7 @@ mutation fooMsg {
       users {
         id
       }
-    }    
+    }
   }
 }
 ```
@@ -256,3 +297,10 @@ mutation createUser($email: String!) {
   [GraphQL Schema Stitching explained: Schema Delegation](https://blog.graph.cool/graphql-schema-stitching-explained-schema-delegation-4c6caf468405)
 - https://github.com/prismagraphql/prisma-binding
 - https://oss.prisma.io/content/GraphQL-CLI/08-Codegen.html
+
+
+### TODO
+
+- [ ] Investigate a better way to type args
+- [ ] See if we can make the playground read from query Journey on boot?
+- [ ] Rename `sent_at` field in `core` schema to `sentAt`. Observe how data is migrated.
