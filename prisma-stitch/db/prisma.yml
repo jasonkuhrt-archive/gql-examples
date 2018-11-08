@@ -1,5 +1,0 @@
-service: core
-stage: dev
-endpoint: http://localhost:4466/
-datamodel: datamodel.graphql
-schema: schemas/prisma.graphql
