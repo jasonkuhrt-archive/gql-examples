@@ -22,15 +22,15 @@
     "ramda": "^0.25.0"
   },
   "devDependencies": {
-    "@types/graphql": "^0.13.1",
-    "@types/node-fetch": "^2.1.1",
-    "graphql-cli": "^2.16.3",
-    "graphql-code-generator": "^0.9.3",
-    "graphql-codegen-typescript-template": "^0.9.3",
-    "nodemon": "^1.17.5",
-    "prisma-binding": "^2.1.0",
-    "ts-node": "^6.1.1",
-    "typescript": "^2.9.2"
+    "@types/graphql": "0.13.1",
+    "@types/node-fetch": "2.1.1",
+    "graphql-cli": "2.16.3",
+    "graphql-code-generator": "0.9.3",
+    "graphql-codegen-typescript-template": "0.9.3",
+    "nodemon": "1.17.5",
+    "prisma-binding": "2.1.0",
+    "ts-node": "6.1.1",
+    "typescript": "2.9.2"
   },
   "prettier": {
     "semi": false,
