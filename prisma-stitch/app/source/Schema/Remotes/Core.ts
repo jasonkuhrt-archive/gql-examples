@@ -29,9 +29,9 @@ export interface Mutation {
     upsertUser: <T = User>(args: { where: UserWhereUniqueInput, create: UserCreateInput, update: UserUpdateInput }, info?: GraphQLResolveInfo | string, options?: Options) => Promise<T> ,
     upsertChannel: <T = Channel>(args: { where: ChannelWhereUniqueInput, create: ChannelCreateInput, update: ChannelUpdateInput }, info?: GraphQLResolveInfo | string, options?: Options) => Promise<T> ,
     upsertMessage: <T = Message>(args: { where: MessageWhereUniqueInput, create: MessageCreateInput, update: MessageUpdateInput }, info?: GraphQLResolveInfo | string, options?: Options) => Promise<T> ,
-    updateManyUsers: <T = BatchPayload>(args: { data: UserUpdateInput, where?: UserWhereInput }, info?: GraphQLResolveInfo | string, options?: Options) => Promise<T> ,
-    updateManyChannels: <T = BatchPayload>(args: { data: ChannelUpdateInput, where?: ChannelWhereInput }, info?: GraphQLResolveInfo | string, options?: Options) => Promise<T> ,
-    updateManyMessages: <T = BatchPayload>(args: { data: MessageUpdateInput, where?: MessageWhereInput }, info?: GraphQLResolveInfo | string, options?: Options) => Promise<T> ,
+    updateManyUsers: <T = BatchPayload>(args: { data: UserUpdateManyMutationInput, where?: UserWhereInput }, info?: GraphQLResolveInfo | string, options?: Options) => Promise<T> ,
+    updateManyChannels: <T = BatchPayload>(args: { data: ChannelUpdateManyMutationInput, where?: ChannelWhereInput }, info?: GraphQLResolveInfo | string, options?: Options) => Promise<T> ,
+    updateManyMessages: <T = BatchPayload>(args: { data: MessageUpdateManyMutationInput, where?: MessageWhereInput }, info?: GraphQLResolveInfo | string, options?: Options) => Promise<T> ,
     deleteManyUsers: <T = BatchPayload>(args: { where?: UserWhereInput }, info?: GraphQLResolveInfo | string, options?: Options) => Promise<T> ,
     deleteManyChannels: <T = BatchPayload>(args: { where?: ChannelWhereInput }, info?: GraphQLResolveInfo | string, options?: Options) => Promise<T> ,
     deleteManyMessages: <T = BatchPayload>(args: { where?: MessageWhereInput }, info?: GraphQLResolveInfo | string, options?: Options) => Promise<T> 
@@ -201,6 +201,10 @@ input ChannelUpdateInput {
   messages: MessageUpdateManyWithoutChannelInput
 }
 
+input ChannelUpdateManyMutationInput {
+  created_at: DateTime
+}
+
 input ChannelUpdateManyWithoutUsersInput {
   create: [ChannelCreateWithoutUsersInput!]
   connect: [ChannelWhereUniqueInput!]
@@ -210,10 +214,9 @@ input ChannelUpdateManyWithoutUsersInput {
   upsert: [ChannelUpsertWithWhereUniqueWithoutUsersInput!]
 }
 
-input ChannelUpdateOneWithoutMessagesInput {
+input ChannelUpdateOneRequiredWithoutMessagesInput {
   create: ChannelCreateWithoutMessagesInput
   connect: ChannelWhereUniqueInput
-  delete: Boolean
   update: ChannelUpdateWithoutMessagesDataInput
   upsert: ChannelUpsertWithoutMessagesInput
 }
@@ -338,9 +341,9 @@ scalar Long
 type Message implements Node {
   id: ID!
   sent_at: DateTime!
-  channel(where: ChannelWhereInput): Channel!
+  channel: Channel!
   content: String!
-  author(where: UserWhereInput): User!
+  author: User!
 }
 
 """A connection to a list of items."""
@@ -452,8 +455,13 @@ input MessageSubscriptionWhereInput {
 input MessageUpdateInput {
   sent_at: DateTime
   content: String
-  channel: ChannelUpdateOneWithoutMessagesInput
-  author: UserUpdateOneWithoutMessagesInput
+  channel: ChannelUpdateOneRequiredWithoutMessagesInput
+  author: UserUpdateOneRequiredWithoutMessagesInput
+}
+
+input MessageUpdateManyMutationInput {
+  sent_at: DateTime
+  content: String
 }
 
 input MessageUpdateManyWithoutAuthorInput {
@@ -477,13 +485,13 @@ input MessageUpdateManyWithoutChannelInput {
 input MessageUpdateWithoutAuthorDataInput {
   sent_at: DateTime
   content: String
-  channel: ChannelUpdateOneWithoutMessagesInput
+  channel: ChannelUpdateOneRequiredWithoutMessagesInput
 }
 
 input MessageUpdateWithoutChannelDataInput {
   sent_at: DateTime
   content: String
-  author: UserUpdateOneWithoutMessagesInput
+  author: UserUpdateOneRequiredWithoutMessagesInput
 }
 
 input MessageUpdateWithWhereUniqueWithoutAuthorInput {
@@ -640,9 +648,9 @@ type Mutation {
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertChannel(where: ChannelWhereUniqueInput!, create: ChannelCreateInput!, update: ChannelUpdateInput!): Channel!
   upsertMessage(where: MessageWhereUniqueInput!, create: MessageCreateInput!, update: MessageUpdateInput!): Message!
-  updateManyUsers(data: UserUpdateInput!, where: UserWhereInput): BatchPayload!
-  updateManyChannels(data: ChannelUpdateInput!, where: ChannelWhereInput): BatchPayload!
-  updateManyMessages(data: MessageUpdateInput!, where: MessageWhereInput): BatchPayload!
+  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
+  updateManyChannels(data: ChannelUpdateManyMutationInput!, where: ChannelWhereInput): BatchPayload!
+  updateManyMessages(data: MessageUpdateManyMutationInput!, where: MessageWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManyChannels(where: ChannelWhereInput): BatchPayload!
   deleteManyMessages(where: MessageWhereInput): BatchPayload!
@@ -828,6 +836,12 @@ input UserUpdateInput {
   messages: MessageUpdateManyWithoutAuthorInput
 }
 
+input UserUpdateManyMutationInput {
+  email: String
+  phoneNumber: String
+  deactivated: Boolean
+}
+
 input UserUpdateManyWithoutChannelsInput {
   create: [UserCreateWithoutChannelsInput!]
   connect: [UserWhereUniqueInput!]
@@ -837,10 +851,9 @@ input UserUpdateManyWithoutChannelsInput {
   upsert: [UserUpsertWithWhereUniqueWithoutChannelsInput!]
 }
 
-input UserUpdateOneWithoutMessagesInput {
+input UserUpdateOneRequiredWithoutMessagesInput {
   create: UserCreateWithoutMessagesInput
   connect: UserWhereUniqueInput
-  delete: Boolean
   update: UserUpdateWithoutMessagesDataInput
   upsert: UserUpsertWithoutMessagesInput
 }
@@ -1065,11 +1078,10 @@ export type MutationType =   'CREATED' |
   'UPDATED' |
   'DELETED'
 
-export interface UserCreateWithoutChannelsInput {
-  email: String
-  phoneNumber?: String
-  deactivated?: Boolean
-  messages?: MessageCreateManyWithoutAuthorInput
+export interface ChannelCreateInput {
+  created_at: DateTime
+  users?: UserCreateManyWithoutChannelsInput
+  messages?: MessageCreateManyWithoutChannelInput
 }
 
 export interface UserWhereInput {
@@ -1128,12 +1140,13 @@ export interface UserWhereInput {
   messages_none?: MessageWhereInput
 }
 
-export interface UserUpdateInput {
-  email?: String
-  phoneNumber?: String
-  deactivated?: Boolean
-  channels?: ChannelUpdateManyWithoutUsersInput
-  messages?: MessageUpdateManyWithoutAuthorInput
+export interface ChannelUpdateManyWithoutUsersInput {
+  create?: ChannelCreateWithoutUsersInput[] | ChannelCreateWithoutUsersInput
+  connect?: ChannelWhereUniqueInput[] | ChannelWhereUniqueInput
+  disconnect?: ChannelWhereUniqueInput[] | ChannelWhereUniqueInput
+  delete?: ChannelWhereUniqueInput[] | ChannelWhereUniqueInput
+  update?: ChannelUpdateWithWhereUniqueWithoutUsersInput[] | ChannelUpdateWithWhereUniqueWithoutUsersInput
+  upsert?: ChannelUpsertWithWhereUniqueWithoutUsersInput[] | ChannelUpsertWithWhereUniqueWithoutUsersInput
 }
 
 export interface MessageWhereInput {
@@ -1180,30 +1193,15 @@ export interface MessageWhereInput {
   author?: UserWhereInput
 }
 
-export interface MessageCreateWithoutChannelInput {
-  sent_at: DateTime
-  content: String
-  author: UserCreateOneWithoutMessagesInput
-}
-
-export interface ChannelUpsertWithWhereUniqueWithoutUsersInput {
-  where: ChannelWhereUniqueInput
-  update: ChannelUpdateWithoutUsersDataInput
-  create: ChannelCreateWithoutUsersInput
-}
-
 export interface UserCreateOneWithoutMessagesInput {
   create?: UserCreateWithoutMessagesInput
   connect?: UserWhereUniqueInput
 }
 
-export interface ChannelUpdateManyWithoutUsersInput {
-  create?: ChannelCreateWithoutUsersInput[] | ChannelCreateWithoutUsersInput
-  connect?: ChannelWhereUniqueInput[] | ChannelWhereUniqueInput
-  disconnect?: ChannelWhereUniqueInput[] | ChannelWhereUniqueInput
-  delete?: ChannelWhereUniqueInput[] | ChannelWhereUniqueInput
-  update?: ChannelUpdateWithWhereUniqueWithoutUsersInput[] | ChannelUpdateWithWhereUniqueWithoutUsersInput
-  upsert?: ChannelUpsertWithWhereUniqueWithoutUsersInput[] | ChannelUpsertWithWhereUniqueWithoutUsersInput
+export interface MessageUpdateWithoutAuthorDataInput {
+  sent_at?: DateTime
+  content?: String
+  channel?: ChannelUpdateOneRequiredWithoutMessagesInput
 }
 
 export interface UserCreateWithoutMessagesInput {
@@ -1211,6 +1209,16 @@ export interface UserCreateWithoutMessagesInput {
   phoneNumber?: String
   deactivated?: Boolean
   channels?: ChannelCreateManyWithoutUsersInput
+}
+
+export interface ChannelUpdateWithWhereUniqueWithoutUsersInput {
+  where: ChannelWhereUniqueInput
+  data: ChannelUpdateWithoutUsersDataInput
+}
+
+export interface MessageCreateManyWithoutAuthorInput {
+  create?: MessageCreateWithoutAuthorInput[] | MessageCreateWithoutAuthorInput
+  connect?: MessageWhereUniqueInput[] | MessageWhereUniqueInput
 }
 
 export interface ChannelWhereInput {
@@ -1247,9 +1255,10 @@ export interface ChannelWhereInput {
   messages_none?: MessageWhereInput
 }
 
-export interface MessageCreateManyWithoutAuthorInput {
-  create?: MessageCreateWithoutAuthorInput[] | MessageCreateWithoutAuthorInput
-  connect?: MessageWhereUniqueInput[] | MessageWhereUniqueInput
+export interface MessageCreateWithoutAuthorInput {
+  sent_at: DateTime
+  content: String
+  channel: ChannelCreateOneWithoutMessagesInput
 }
 
 export interface ChannelSubscriptionWhereInput {
@@ -1263,10 +1272,9 @@ export interface ChannelSubscriptionWhereInput {
   node?: ChannelWhereInput
 }
 
-export interface MessageCreateWithoutAuthorInput {
-  sent_at: DateTime
-  content: String
-  channel: ChannelCreateOneWithoutMessagesInput
+export interface ChannelCreateOneWithoutMessagesInput {
+  create?: ChannelCreateWithoutMessagesInput
+  connect?: ChannelWhereUniqueInput
 }
 
 export interface UserWhereUniqueInput {
@@ -1274,24 +1282,13 @@ export interface UserWhereUniqueInput {
   email?: String
 }
 
-export interface ChannelCreateOneWithoutMessagesInput {
-  create?: ChannelCreateWithoutMessagesInput
-  connect?: ChannelWhereUniqueInput
-}
-
-export interface MessageWhereUniqueInput {
-  id?: ID_Input
-}
-
 export interface ChannelCreateWithoutMessagesInput {
   created_at: DateTime
   users?: UserCreateManyWithoutChannelsInput
 }
 
-export interface ChannelUpdateInput {
-  created_at?: DateTime
-  users?: UserUpdateManyWithoutChannelsInput
-  messages?: MessageUpdateManyWithoutChannelInput
+export interface MessageWhereUniqueInput {
+  id?: ID_Input
 }
 
 export interface UserCreateManyWithoutChannelsInput {
@@ -1299,28 +1296,22 @@ export interface UserCreateManyWithoutChannelsInput {
   connect?: UserWhereUniqueInput[] | UserWhereUniqueInput
 }
 
-export interface ChannelUpsertWithoutMessagesInput {
-  update: ChannelUpdateWithoutMessagesDataInput
-  create: ChannelCreateWithoutMessagesInput
+export interface ChannelUpdateManyMutationInput {
+  created_at?: DateTime
 }
 
-export interface MessageUpdateWithoutAuthorDataInput {
-  sent_at?: DateTime
-  content?: String
-  channel?: ChannelUpdateOneWithoutMessagesInput
-}
-
-export interface UserUpdateWithoutChannelsDataInput {
-  email?: String
+export interface UserCreateWithoutChannelsInput {
+  email: String
   phoneNumber?: String
   deactivated?: Boolean
-  messages?: MessageUpdateManyWithoutAuthorInput
+  messages?: MessageCreateManyWithoutAuthorInput
 }
 
-export interface ChannelCreateInput {
-  created_at: DateTime
-  users?: UserCreateManyWithoutChannelsInput
-  messages?: MessageCreateManyWithoutChannelInput
+export interface MessageUpdateInput {
+  sent_at?: DateTime
+  content?: String
+  channel?: ChannelUpdateOneRequiredWithoutMessagesInput
+  author?: UserUpdateOneRequiredWithoutMessagesInput
 }
 
 export interface UserUpdateManyWithoutChannelsInput {
@@ -1332,6 +1323,12 @@ export interface UserUpdateManyWithoutChannelsInput {
   upsert?: UserUpsertWithWhereUniqueWithoutChannelsInput[] | UserUpsertWithWhereUniqueWithoutChannelsInput
 }
 
+export interface MessageUpsertWithWhereUniqueWithoutAuthorInput {
+  where: MessageWhereUniqueInput
+  update: MessageUpdateWithoutAuthorDataInput
+  create: MessageCreateWithoutAuthorInput
+}
+
 export interface MessageCreateInput {
   sent_at: DateTime
   content: String
@@ -1339,81 +1336,18 @@ export interface MessageCreateInput {
   author: UserCreateOneWithoutMessagesInput
 }
 
-export interface ChannelUpdateOneWithoutMessagesInput {
-  create?: ChannelCreateWithoutMessagesInput
-  connect?: ChannelWhereUniqueInput
-  delete?: Boolean
-  update?: ChannelUpdateWithoutMessagesDataInput
-  upsert?: ChannelUpsertWithoutMessagesInput
+export interface UserUpsertWithWhereUniqueWithoutChannelsInput {
+  where: UserWhereUniqueInput
+  update: UserUpdateWithoutChannelsDataInput
+  create: UserCreateWithoutChannelsInput
 }
 
-export interface MessageUpdateWithWhereUniqueWithoutAuthorInput {
-  where: MessageWhereUniqueInput
-  data: MessageUpdateWithoutAuthorDataInput
-}
-
-export interface ChannelCreateManyWithoutUsersInput {
-  create?: ChannelCreateWithoutUsersInput[] | ChannelCreateWithoutUsersInput
-  connect?: ChannelWhereUniqueInput[] | ChannelWhereUniqueInput
-}
-
-export interface MessageUpdateManyWithoutAuthorInput {
-  create?: MessageCreateWithoutAuthorInput[] | MessageCreateWithoutAuthorInput
-  connect?: MessageWhereUniqueInput[] | MessageWhereUniqueInput
-  disconnect?: MessageWhereUniqueInput[] | MessageWhereUniqueInput
-  delete?: MessageWhereUniqueInput[] | MessageWhereUniqueInput
-  update?: MessageUpdateWithWhereUniqueWithoutAuthorInput[] | MessageUpdateWithWhereUniqueWithoutAuthorInput
-  upsert?: MessageUpsertWithWhereUniqueWithoutAuthorInput[] | MessageUpsertWithWhereUniqueWithoutAuthorInput
-}
-
-export interface MessageCreateManyWithoutChannelInput {
-  create?: MessageCreateWithoutChannelInput[] | MessageCreateWithoutChannelInput
-  connect?: MessageWhereUniqueInput[] | MessageWhereUniqueInput
-}
-
-export interface ChannelUpdateWithWhereUniqueWithoutUsersInput {
-  where: ChannelWhereUniqueInput
-  data: ChannelUpdateWithoutUsersDataInput
-}
-
-export interface MessageSubscriptionWhereInput {
-  AND?: MessageSubscriptionWhereInput[] | MessageSubscriptionWhereInput
-  OR?: MessageSubscriptionWhereInput[] | MessageSubscriptionWhereInput
-  NOT?: MessageSubscriptionWhereInput[] | MessageSubscriptionWhereInput
-  mutation_in?: MutationType[] | MutationType
-  updatedFields_contains?: String
-  updatedFields_contains_every?: String[] | String
-  updatedFields_contains_some?: String[] | String
-  node?: MessageWhereInput
-}
-
-export interface ChannelUpdateWithoutUsersDataInput {
-  created_at?: DateTime
-  messages?: MessageUpdateManyWithoutChannelInput
-}
-
-export interface ChannelWhereUniqueInput {
-  id?: ID_Input
-}
-
-export interface MessageUpdateManyWithoutChannelInput {
-  create?: MessageCreateWithoutChannelInput[] | MessageCreateWithoutChannelInput
-  connect?: MessageWhereUniqueInput[] | MessageWhereUniqueInput
-  disconnect?: MessageWhereUniqueInput[] | MessageWhereUniqueInput
-  delete?: MessageWhereUniqueInput[] | MessageWhereUniqueInput
-  update?: MessageUpdateWithWhereUniqueWithoutChannelInput[] | MessageUpdateWithWhereUniqueWithoutChannelInput
-  upsert?: MessageUpsertWithWhereUniqueWithoutChannelInput[] | MessageUpsertWithWhereUniqueWithoutChannelInput
-}
-
-export interface MessageUpsertWithWhereUniqueWithoutAuthorInput {
-  where: MessageWhereUniqueInput
-  update: MessageUpdateWithoutAuthorDataInput
-  create: MessageCreateWithoutAuthorInput
-}
-
-export interface MessageUpdateWithWhereUniqueWithoutChannelInput {
-  where: MessageWhereUniqueInput
-  data: MessageUpdateWithoutChannelDataInput
+export interface UserUpdateInput {
+  email?: String
+  phoneNumber?: String
+  deactivated?: Boolean
+  channels?: ChannelUpdateManyWithoutUsersInput
+  messages?: MessageUpdateManyWithoutAuthorInput
 }
 
 export interface UserUpdateWithWhereUniqueWithoutChannelsInput {
@@ -1421,44 +1355,31 @@ export interface UserUpdateWithWhereUniqueWithoutChannelsInput {
   data: UserUpdateWithoutChannelsDataInput
 }
 
-export interface MessageUpdateWithoutChannelDataInput {
-  sent_at?: DateTime
-  content?: String
-  author?: UserUpdateOneWithoutMessagesInput
+export interface ChannelUpdateWithoutMessagesDataInput {
+  created_at?: DateTime
+  users?: UserUpdateManyWithoutChannelsInput
 }
 
-export interface UserCreateInput {
-  email: String
-  phoneNumber?: String
-  deactivated?: Boolean
-  channels?: ChannelCreateManyWithoutUsersInput
-  messages?: MessageCreateManyWithoutAuthorInput
+export interface ChannelCreateManyWithoutUsersInput {
+  create?: ChannelCreateWithoutUsersInput[] | ChannelCreateWithoutUsersInput
+  connect?: ChannelWhereUniqueInput[] | ChannelWhereUniqueInput
 }
 
-export interface MessageUpsertWithWhereUniqueWithoutChannelInput {
-  where: MessageWhereUniqueInput
-  update: MessageUpdateWithoutChannelDataInput
-  create: MessageCreateWithoutChannelInput
+export interface ChannelUpdateOneRequiredWithoutMessagesInput {
+  create?: ChannelCreateWithoutMessagesInput
+  connect?: ChannelWhereUniqueInput
+  update?: ChannelUpdateWithoutMessagesDataInput
+  upsert?: ChannelUpsertWithoutMessagesInput
 }
 
-export interface UserUpsertWithoutMessagesInput {
-  update: UserUpdateWithoutMessagesDataInput
-  create: UserCreateWithoutMessagesInput
+export interface MessageCreateManyWithoutChannelInput {
+  create?: MessageCreateWithoutChannelInput[] | MessageCreateWithoutChannelInput
+  connect?: MessageWhereUniqueInput[] | MessageWhereUniqueInput
 }
 
-export interface UserUpdateWithoutMessagesDataInput {
-  email?: String
-  phoneNumber?: String
-  deactivated?: Boolean
-  channels?: ChannelUpdateManyWithoutUsersInput
-}
-
-export interface UserUpdateOneWithoutMessagesInput {
-  create?: UserCreateWithoutMessagesInput
-  connect?: UserWhereUniqueInput
-  delete?: Boolean
-  update?: UserUpdateWithoutMessagesDataInput
-  upsert?: UserUpsertWithoutMessagesInput
+export interface ChannelUpdateWithoutUsersDataInput {
+  created_at?: DateTime
+  messages?: MessageUpdateManyWithoutChannelInput
 }
 
 export interface UserSubscriptionWhereInput {
@@ -1472,27 +1393,132 @@ export interface UserSubscriptionWhereInput {
   node?: UserWhereInput
 }
 
+export interface MessageUpdateManyWithoutChannelInput {
+  create?: MessageCreateWithoutChannelInput[] | MessageCreateWithoutChannelInput
+  connect?: MessageWhereUniqueInput[] | MessageWhereUniqueInput
+  disconnect?: MessageWhereUniqueInput[] | MessageWhereUniqueInput
+  delete?: MessageWhereUniqueInput[] | MessageWhereUniqueInput
+  update?: MessageUpdateWithWhereUniqueWithoutChannelInput[] | MessageUpdateWithWhereUniqueWithoutChannelInput
+  upsert?: MessageUpsertWithWhereUniqueWithoutChannelInput[] | MessageUpsertWithWhereUniqueWithoutChannelInput
+}
+
+export interface MessageUpdateManyMutationInput {
+  sent_at?: DateTime
+  content?: String
+}
+
+export interface MessageUpdateWithWhereUniqueWithoutChannelInput {
+  where: MessageWhereUniqueInput
+  data: MessageUpdateWithoutChannelDataInput
+}
+
+export interface ChannelUpdateInput {
+  created_at?: DateTime
+  users?: UserUpdateManyWithoutChannelsInput
+  messages?: MessageUpdateManyWithoutChannelInput
+}
+
+export interface MessageUpdateWithoutChannelDataInput {
+  sent_at?: DateTime
+  content?: String
+  author?: UserUpdateOneRequiredWithoutMessagesInput
+}
+
+export interface UserUpdateWithoutChannelsDataInput {
+  email?: String
+  phoneNumber?: String
+  deactivated?: Boolean
+  messages?: MessageUpdateManyWithoutAuthorInput
+}
+
+export interface UserUpdateOneRequiredWithoutMessagesInput {
+  create?: UserCreateWithoutMessagesInput
+  connect?: UserWhereUniqueInput
+  update?: UserUpdateWithoutMessagesDataInput
+  upsert?: UserUpsertWithoutMessagesInput
+}
+
 export interface ChannelCreateWithoutUsersInput {
   created_at: DateTime
   messages?: MessageCreateManyWithoutChannelInput
 }
 
-export interface ChannelUpdateWithoutMessagesDataInput {
-  created_at?: DateTime
-  users?: UserUpdateManyWithoutChannelsInput
+export interface UserUpdateWithoutMessagesDataInput {
+  email?: String
+  phoneNumber?: String
+  deactivated?: Boolean
+  channels?: ChannelUpdateManyWithoutUsersInput
 }
 
-export interface UserUpsertWithWhereUniqueWithoutChannelsInput {
-  where: UserWhereUniqueInput
-  update: UserUpdateWithoutChannelsDataInput
-  create: UserCreateWithoutChannelsInput
+export interface MessageSubscriptionWhereInput {
+  AND?: MessageSubscriptionWhereInput[] | MessageSubscriptionWhereInput
+  OR?: MessageSubscriptionWhereInput[] | MessageSubscriptionWhereInput
+  NOT?: MessageSubscriptionWhereInput[] | MessageSubscriptionWhereInput
+  mutation_in?: MutationType[] | MutationType
+  updatedFields_contains?: String
+  updatedFields_contains_every?: String[] | String
+  updatedFields_contains_some?: String[] | String
+  node?: MessageWhereInput
 }
 
-export interface MessageUpdateInput {
-  sent_at?: DateTime
-  content?: String
-  channel?: ChannelUpdateOneWithoutMessagesInput
-  author?: UserUpdateOneWithoutMessagesInput
+export interface UserUpsertWithoutMessagesInput {
+  update: UserUpdateWithoutMessagesDataInput
+  create: UserCreateWithoutMessagesInput
+}
+
+export interface UserUpdateManyMutationInput {
+  email?: String
+  phoneNumber?: String
+  deactivated?: Boolean
+}
+
+export interface MessageUpdateWithWhereUniqueWithoutAuthorInput {
+  where: MessageWhereUniqueInput
+  data: MessageUpdateWithoutAuthorDataInput
+}
+
+export interface MessageUpdateManyWithoutAuthorInput {
+  create?: MessageCreateWithoutAuthorInput[] | MessageCreateWithoutAuthorInput
+  connect?: MessageWhereUniqueInput[] | MessageWhereUniqueInput
+  disconnect?: MessageWhereUniqueInput[] | MessageWhereUniqueInput
+  delete?: MessageWhereUniqueInput[] | MessageWhereUniqueInput
+  update?: MessageUpdateWithWhereUniqueWithoutAuthorInput[] | MessageUpdateWithWhereUniqueWithoutAuthorInput
+  upsert?: MessageUpsertWithWhereUniqueWithoutAuthorInput[] | MessageUpsertWithWhereUniqueWithoutAuthorInput
+}
+
+export interface ChannelUpsertWithWhereUniqueWithoutUsersInput {
+  where: ChannelWhereUniqueInput
+  update: ChannelUpdateWithoutUsersDataInput
+  create: ChannelCreateWithoutUsersInput
+}
+
+export interface MessageUpsertWithWhereUniqueWithoutChannelInput {
+  where: MessageWhereUniqueInput
+  update: MessageUpdateWithoutChannelDataInput
+  create: MessageCreateWithoutChannelInput
+}
+
+export interface ChannelUpsertWithoutMessagesInput {
+  update: ChannelUpdateWithoutMessagesDataInput
+  create: ChannelCreateWithoutMessagesInput
+}
+
+export interface ChannelWhereUniqueInput {
+  id?: ID_Input
+}
+
+export interface MessageCreateWithoutChannelInput {
+  sent_at: DateTime
+  content: String
+  author: UserCreateOneWithoutMessagesInput
+}
+
+export interface UserCreateInput {
+  email: String
+  phoneNumber?: String
+  deactivated?: Boolean
+  channels?: ChannelCreateManyWithoutUsersInput
+  messages?: MessageCreateManyWithoutAuthorInput
 }
 
 /*
@@ -1510,13 +1536,23 @@ export interface MessagePreviousValues {
 }
 
 /*
- * A connection to a list of items.
+ * An edge in a connection.
 
  */
-export interface UserConnection {
-  pageInfo: PageInfo
-  edges: UserEdge[]
-  aggregate: AggregateUser
+export interface UserEdge {
+  node: User
+  cursor: String
+}
+
+export interface ChannelSubscriptionPayload {
+  mutation: MutationType
+  node?: Channel
+  updatedFields?: String[]
+  previousValues?: ChannelPreviousValues
+}
+
+export interface BatchPayload {
+  count: Long
 }
 
 export interface User extends Node {
@@ -1526,6 +1562,17 @@ export interface User extends Node {
   channels?: Channel[]
   messages?: Message[]
   deactivated: Boolean
+}
+
+export interface Channel extends Node {
+  id: ID_Output
+  created_at: DateTime
+  users?: User[]
+  messages?: Message[]
+}
+
+export interface AggregateMessage {
+  count: Int
 }
 
 /*
@@ -1539,28 +1586,6 @@ export interface PageInfo {
   endCursor?: String
 }
 
-export interface ChannelSubscriptionPayload {
-  mutation: MutationType
-  node?: Channel
-  updatedFields?: String[]
-  previousValues?: ChannelPreviousValues
-}
-
-export interface MessageSubscriptionPayload {
-  mutation: MutationType
-  node?: Message
-  updatedFields?: String[]
-  previousValues?: MessagePreviousValues
-}
-
-export interface BatchPayload {
-  count: Long
-}
-
-export interface AggregateMessage {
-  count: Int
-}
-
 /*
  * A connection to a list of items.
 
@@ -1571,11 +1596,14 @@ export interface MessageConnection {
   aggregate: AggregateMessage
 }
 
-export interface Channel extends Node {
-  id: ID_Output
-  created_at: DateTime
-  users?: User[]
-  messages?: Message[]
+/*
+ * A connection to a list of items.
+
+ */
+export interface UserConnection {
+  pageInfo: PageInfo
+  edges: UserEdge[]
+  aggregate: AggregateUser
 }
 
 /*
@@ -1618,13 +1646,11 @@ export interface Message extends Node {
   author: User
 }
 
-/*
- * An edge in a connection.
-
- */
-export interface UserEdge {
-  node: User
-  cursor: String
+export interface MessageSubscriptionPayload {
+  mutation: MutationType
+  node?: Message
+  updatedFields?: String[]
+  previousValues?: MessagePreviousValues
 }
 
 /*
@@ -1651,6 +1677,12 @@ export interface MessageEdge {
 }
 
 /*
+The `Long` scalar type represents non-fractional signed whole numeric values.
+Long can represent values between -(2^63) and 2^63 - 1.
+*/
+export type Long = string
+
+/*
 The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 
 */
 export type Int = number
@@ -1662,12 +1694,6 @@ export type ID_Input = string | number
 export type ID_Output = string
 
 export type DateTime = Date | string
-
-/*
-The `Long` scalar type represents non-fractional signed whole numeric values.
-Long can represent values between -(2^63) and 2^63 - 1.
-*/
-export type Long = string
 
 /*
 The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.

@@ -1,5 +1,5 @@
 # source: http://localhost:4466/core/dev
-# timestamp: Sat Jun 30 2018 21:53:57 GMT-0400 (EDT)
+# timestamp: Wed Nov 07 2018 23:20:01 GMT-0500 (GMT-05:00)
 
 type AggregateChannel {
   count: Int!
@@ -131,6 +131,10 @@ input ChannelUpdateInput {
   messages: MessageUpdateManyWithoutChannelInput
 }
 
+input ChannelUpdateManyMutationInput {
+  created_at: DateTime
+}
+
 input ChannelUpdateManyWithoutUsersInput {
   create: [ChannelCreateWithoutUsersInput!]
   connect: [ChannelWhereUniqueInput!]
@@ -140,10 +144,9 @@ input ChannelUpdateManyWithoutUsersInput {
   upsert: [ChannelUpsertWithWhereUniqueWithoutUsersInput!]
 }
 
-input ChannelUpdateOneWithoutMessagesInput {
+input ChannelUpdateOneRequiredWithoutMessagesInput {
   create: ChannelCreateWithoutMessagesInput
   connect: ChannelWhereUniqueInput
-  delete: Boolean
   update: ChannelUpdateWithoutMessagesDataInput
   upsert: ChannelUpsertWithoutMessagesInput
 }
@@ -268,9 +271,9 @@ scalar Long
 type Message implements Node {
   id: ID!
   sent_at: DateTime!
-  channel(where: ChannelWhereInput): Channel!
+  channel: Channel!
   content: String!
-  author(where: UserWhereInput): User!
+  author: User!
 }
 
 """A connection to a list of items."""
@@ -382,8 +385,13 @@ input MessageSubscriptionWhereInput {
 input MessageUpdateInput {
   sent_at: DateTime
   content: String
-  channel: ChannelUpdateOneWithoutMessagesInput
-  author: UserUpdateOneWithoutMessagesInput
+  channel: ChannelUpdateOneRequiredWithoutMessagesInput
+  author: UserUpdateOneRequiredWithoutMessagesInput
+}
+
+input MessageUpdateManyMutationInput {
+  sent_at: DateTime
+  content: String
 }
 
 input MessageUpdateManyWithoutAuthorInput {
@@ -407,13 +415,13 @@ input MessageUpdateManyWithoutChannelInput {
 input MessageUpdateWithoutAuthorDataInput {
   sent_at: DateTime
   content: String
-  channel: ChannelUpdateOneWithoutMessagesInput
+  channel: ChannelUpdateOneRequiredWithoutMessagesInput
 }
 
 input MessageUpdateWithoutChannelDataInput {
   sent_at: DateTime
   content: String
-  author: UserUpdateOneWithoutMessagesInput
+  author: UserUpdateOneRequiredWithoutMessagesInput
 }
 
 input MessageUpdateWithWhereUniqueWithoutAuthorInput {
@@ -570,9 +578,9 @@ type Mutation {
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertChannel(where: ChannelWhereUniqueInput!, create: ChannelCreateInput!, update: ChannelUpdateInput!): Channel!
   upsertMessage(where: MessageWhereUniqueInput!, create: MessageCreateInput!, update: MessageUpdateInput!): Message!
-  updateManyUsers(data: UserUpdateInput!, where: UserWhereInput): BatchPayload!
-  updateManyChannels(data: ChannelUpdateInput!, where: ChannelWhereInput): BatchPayload!
-  updateManyMessages(data: MessageUpdateInput!, where: MessageWhereInput): BatchPayload!
+  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
+  updateManyChannels(data: ChannelUpdateManyMutationInput!, where: ChannelWhereInput): BatchPayload!
+  updateManyMessages(data: MessageUpdateManyMutationInput!, where: MessageWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManyChannels(where: ChannelWhereInput): BatchPayload!
   deleteManyMessages(where: MessageWhereInput): BatchPayload!
@@ -758,6 +766,12 @@ input UserUpdateInput {
   messages: MessageUpdateManyWithoutAuthorInput
 }
 
+input UserUpdateManyMutationInput {
+  email: String
+  phoneNumber: String
+  deactivated: Boolean
+}
+
 input UserUpdateManyWithoutChannelsInput {
   create: [UserCreateWithoutChannelsInput!]
   connect: [UserWhereUniqueInput!]
@@ -767,10 +781,9 @@ input UserUpdateManyWithoutChannelsInput {
   upsert: [UserUpsertWithWhereUniqueWithoutChannelsInput!]
 }
 
-input UserUpdateOneWithoutMessagesInput {
+input UserUpdateOneRequiredWithoutMessagesInput {
   create: UserCreateWithoutMessagesInput
   connect: UserWhereUniqueInput
-  delete: Boolean
   update: UserUpdateWithoutMessagesDataInput
   upsert: UserUpsertWithoutMessagesInput
 }
