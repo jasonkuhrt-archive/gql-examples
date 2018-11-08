@@ -16,12 +16,12 @@
     "node-fetch": "^2.1.2"
   },
   "devDependencies": {
-    "@types/graphql": "^0.13.1",
-    "@types/node-fetch": "^2.1.1",
-    "graphql-cli": "^2.16.3",
-    "nodemon": "^1.17.5",
-    "ts-node": "^6.1.1",
-    "typescript": "^2.9.2"
+    "@types/graphql": "0.13.1",
+    "@types/node-fetch": "2.1.1",
+    "graphql-cli": "2.16.3",
+    "nodemon": "1.17.5",
+    "ts-node": "6.1.1",
+    "typescript": "2.9.2"
   },
   "prettier": {
     "semi": false,
