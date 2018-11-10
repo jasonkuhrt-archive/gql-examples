@@ -11,9 +11,7 @@ Prisma v1.20
 - [Observations](#observations)
 - [Unresolved Issues](#unresolved-issues)
   - [Use Schema Transform to hide `User.deactivated` from Gateway](#use-schema-transform-to-hide-userdeactivated-from-gateway)
-  - [Typing logic in resovlers](#typing-logic-in-resovlers)
   - [Transform workflow](#transform-workflow)
-  - [Cannot subscribe to upserts](#cannot-subscribe-to-upserts)
   - [Subscription with relation in where clause not working](#subscription-with-relation-in-where-clause-not-working)
 - [Query Journey](#query-journey)
   - [Observe new users](#observe-new-users)
@@ -113,31 +111,9 @@ The issue there is that it is not done, not active, has a few old open issues. A
 
 - https://github.com/prismagraphql/graphql-transform-schema/issues/15
 
-#### Typing logic in resovlers
-
-In the following resolver:
-
-```ts
-user: (_, args, ctx, info) => {
-  return ctx.core.query
-    .users(F.mergeDeepRight(args, { where: { deactivated: false } }), info)
-    .then(users => users[0] || null)
-},
-```
-
-We have no type safety for the values passed into users method; The following would be accepted just as well:
-
-```ts
-F.mergeDeepRight(args, { wheree: { deaactivated: false } })
-```
-
 #### Transform workflow
 
 * https://github.com/apollographql/graphql-tools/issues/874
-
-#### Cannot subscribe to upserts
-
-* https://github.com/prismagraphql/prisma/issues/2532
 
 #### Subscription with relation in where clause not working
 
@@ -301,6 +277,5 @@ mutation createUser($email: String!) {
 
 ### TODO
 
-- [ ] Investigate a better way to type args
 - [ ] See if we can make the playground read from query Journey on boot?
 - [ ] Rename `sent_at` field in `core` schema to `sentAt`. Observe how data is migrated.
