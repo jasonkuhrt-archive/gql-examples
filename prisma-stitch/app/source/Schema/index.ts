@@ -19,5 +19,4 @@ const transforms: Tools.Transform[] = [
 
 const schemaTransformed = Tools.transformSchema(schema, transforms)
 
-export * from "./Types"
 export { typeDefs, schema, schemaTransformed }

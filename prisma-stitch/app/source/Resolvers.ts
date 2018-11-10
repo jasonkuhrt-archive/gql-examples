@@ -1,27 +1,23 @@
-import * as YogaTypes from "graphql-yoga/dist/types"
 import * as PrismaBinding from "prisma-binding"
 import * as F from "ramda"
-import * as Context from "./Context"
 
-type Resolvers = YogaTypes.IResolvers<Context.Context>
-
-const resolvers: Resolvers = {
+const resolvers: any = {
   Query: {
-    users: (_, args, ctx, info) => {
+    users: (_: any, args: any, ctx: any, info: any) => {
       return ctx.core.query.users(
         F.mergeDeepRight(args, { where: { deactivated: false } }),
         info
       )
     },
-    user: (_, args, ctx, info) => {
+    user: (_: any, args: any, ctx: any, info: any) => {
       return ctx.core.query
         .users(F.mergeDeepRight(args, { where: { deactivated: false } }), info)
-        .then(users => users[0] || null)
+        .then((users: any) => users[0] || null)
     },
     channel: PrismaBinding.forwardTo("core"),
   },
   Mutation: {
-    signup: (_, args, ctx, info) => {
+    signup: (_: any, args: any, ctx: any, info: any) => {
       // NOTE If the user is NOT deactivated then this query
       // will still go through but be like a noop. Arguably
       // this case should return a client error analogous
@@ -45,7 +41,7 @@ const resolvers: Resolvers = {
         info
       )
     },
-    deactivateByEmail: (_, args, ctx, info) => {
+    deactivateByEmail: (_: any, args: any, ctx: any, info: any) => {
       return ctx.core.mutation.updateUser(
         {
           data: { deactivated: true },
@@ -54,7 +50,7 @@ const resolvers: Resolvers = {
         info
       )
     },
-    sendMessage: (_, args, ctx, info) => {
+    sendMessage: (_: any, args: any, ctx: any, info: any) => {
       // NOTE
       // Prisma create mutations are rather clever. They support
       // either connecting to relations or creating them as well
@@ -87,12 +83,12 @@ const resolvers: Resolvers = {
   },
   Subscription: {
     message: {
-      subscribe: async (_, args, ctx, info) => {
+      subscribe: async (_: any, args: any, ctx: any, info: any) => {
         return ctx.core.subscription.user(args, info)
       },
     },
     channel: {
-      subscribe: async (_, args, ctx, info) => {
+      subscribe: async (_: any, args: any, ctx: any, info: any) => {
         return ctx.core.subscription.channel(args, info)
       },
     },

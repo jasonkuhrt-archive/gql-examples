@@ -7,6 +7,6 @@ const server = new Yoga.GraphQLServer({
   context: Context.create,
 })
 
-server.start().then(server => {
+server.start().then((server: any) => {
   console.log("started server at %s", JSON.stringify(server.address()))
 })
