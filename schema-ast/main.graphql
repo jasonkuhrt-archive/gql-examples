@@ -1,0 +1,7 @@
+type Human {
+  name: String!
+  age: Int
+  a: [String]
+  b: [String]!
+  c: [String!]!
+}
