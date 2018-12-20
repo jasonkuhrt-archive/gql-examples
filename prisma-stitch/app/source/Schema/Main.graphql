@@ -1,0 +1,12 @@
+# import User, Message, Channel, Query.*, Subscription.message, Mutation.createChannel, Mutation.updateUser from "./Remotes/Core.graphql"
+
+type Mutation {
+  signup(email: String!): User!
+  deactivateByEmail(email: String!): User!
+  sendMessage(
+    content: String!
+    authorId: ID!
+    channelId: ID!
+    sentAt: DateTime!
+  ): Message!
+}

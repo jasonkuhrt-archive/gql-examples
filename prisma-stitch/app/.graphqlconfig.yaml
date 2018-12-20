@@ -1,0 +1,16 @@
+projects:
+  gateway:
+    schemaPath: source/Schema/Main.graphql
+    extensions:
+      endpoints:
+        dev: 'http://localhost:4000'
+  core:
+    schemaPath: source/Schema/Remotes/Core.graphql
+    extensions:
+      endpoints:
+        dev: 'http://localhost:4466/core/dev'
+      codegen: 
+        generator: prisma-binding
+        language: typescript
+        output:
+          binding: source/Schema/Remotes/Core.ts

@@ -1,5 +1,5 @@
 # source: http://localhost:4466/core/dev
-# timestamp: Mon Jun 18 2018 23:28:33 GMT-0400 (EDT)
+# timestamp: Wed Nov 07 2018 23:20:01 GMT-0500 (GMT-05:00)
 
 type AggregateChannel {
   count: Int!
@@ -131,6 +131,10 @@ input ChannelUpdateInput {
   messages: MessageUpdateManyWithoutChannelInput
 }
 
+input ChannelUpdateManyMutationInput {
+  created_at: DateTime
+}
+
 input ChannelUpdateManyWithoutUsersInput {
   create: [ChannelCreateWithoutUsersInput!]
   connect: [ChannelWhereUniqueInput!]
@@ -140,10 +144,9 @@ input ChannelUpdateManyWithoutUsersInput {
   upsert: [ChannelUpsertWithWhereUniqueWithoutUsersInput!]
 }
 
-input ChannelUpdateOneWithoutMessagesInput {
+input ChannelUpdateOneRequiredWithoutMessagesInput {
   create: ChannelCreateWithoutMessagesInput
   connect: ChannelWhereUniqueInput
-  delete: Boolean
   update: ChannelUpdateWithoutMessagesDataInput
   upsert: ChannelUpsertWithoutMessagesInput
 }
@@ -268,9 +271,9 @@ scalar Long
 type Message implements Node {
   id: ID!
   sent_at: DateTime!
-  channel(where: ChannelWhereInput): Channel!
+  channel: Channel!
   content: String!
-  author(where: UserWhereInput): User!
+  author: User!
 }
 
 """A connection to a list of items."""
@@ -382,8 +385,13 @@ input MessageSubscriptionWhereInput {
 input MessageUpdateInput {
   sent_at: DateTime
   content: String
-  channel: ChannelUpdateOneWithoutMessagesInput
-  author: UserUpdateOneWithoutMessagesInput
+  channel: ChannelUpdateOneRequiredWithoutMessagesInput
+  author: UserUpdateOneRequiredWithoutMessagesInput
+}
+
+input MessageUpdateManyMutationInput {
+  sent_at: DateTime
+  content: String
 }
 
 input MessageUpdateManyWithoutAuthorInput {
@@ -407,13 +415,13 @@ input MessageUpdateManyWithoutChannelInput {
 input MessageUpdateWithoutAuthorDataInput {
   sent_at: DateTime
   content: String
-  channel: ChannelUpdateOneWithoutMessagesInput
+  channel: ChannelUpdateOneRequiredWithoutMessagesInput
 }
 
 input MessageUpdateWithoutChannelDataInput {
   sent_at: DateTime
   content: String
-  author: UserUpdateOneWithoutMessagesInput
+  author: UserUpdateOneRequiredWithoutMessagesInput
 }
 
 input MessageUpdateWithWhereUniqueWithoutAuthorInput {
@@ -570,9 +578,9 @@ type Mutation {
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
   upsertChannel(where: ChannelWhereUniqueInput!, create: ChannelCreateInput!, update: ChannelUpdateInput!): Channel!
   upsertMessage(where: MessageWhereUniqueInput!, create: MessageCreateInput!, update: MessageUpdateInput!): Message!
-  updateManyUsers(data: UserUpdateInput!, where: UserWhereInput): BatchPayload!
-  updateManyChannels(data: ChannelUpdateInput!, where: ChannelWhereInput): BatchPayload!
-  updateManyMessages(data: MessageUpdateInput!, where: MessageWhereInput): BatchPayload!
+  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
+  updateManyChannels(data: ChannelUpdateManyMutationInput!, where: ChannelWhereInput): BatchPayload!
+  updateManyMessages(data: MessageUpdateManyMutationInput!, where: MessageWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
   deleteManyChannels(where: ChannelWhereInput): BatchPayload!
   deleteManyMessages(where: MessageWhereInput): BatchPayload!
@@ -632,8 +640,10 @@ type Subscription {
 type User implements Node {
   id: ID!
   email: String!
+  phoneNumber: String
   channels(where: ChannelWhereInput, orderBy: ChannelOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Channel!]
   messages(where: MessageWhereInput, orderBy: MessageOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Message!]
+  deactivated: Boolean!
 }
 
 """A connection to a list of items."""
@@ -648,6 +658,8 @@ type UserConnection {
 
 input UserCreateInput {
   email: String!
+  phoneNumber: String
+  deactivated: Boolean
   channels: ChannelCreateManyWithoutUsersInput
   messages: MessageCreateManyWithoutAuthorInput
 }
@@ -664,11 +676,15 @@ input UserCreateOneWithoutMessagesInput {
 
 input UserCreateWithoutChannelsInput {
   email: String!
+  phoneNumber: String
+  deactivated: Boolean
   messages: MessageCreateManyWithoutAuthorInput
 }
 
 input UserCreateWithoutMessagesInput {
   email: String!
+  phoneNumber: String
+  deactivated: Boolean
   channels: ChannelCreateManyWithoutUsersInput
 }
 
@@ -686,6 +702,10 @@ enum UserOrderByInput {
   id_DESC
   email_ASC
   email_DESC
+  phoneNumber_ASC
+  phoneNumber_DESC
+  deactivated_ASC
+  deactivated_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -695,6 +715,8 @@ enum UserOrderByInput {
 type UserPreviousValues {
   id: ID!
   email: String!
+  phoneNumber: String
+  deactivated: Boolean!
 }
 
 type UserSubscriptionPayload {
@@ -738,8 +760,16 @@ input UserSubscriptionWhereInput {
 
 input UserUpdateInput {
   email: String
+  phoneNumber: String
+  deactivated: Boolean
   channels: ChannelUpdateManyWithoutUsersInput
   messages: MessageUpdateManyWithoutAuthorInput
+}
+
+input UserUpdateManyMutationInput {
+  email: String
+  phoneNumber: String
+  deactivated: Boolean
 }
 
 input UserUpdateManyWithoutChannelsInput {
@@ -751,21 +781,24 @@ input UserUpdateManyWithoutChannelsInput {
   upsert: [UserUpsertWithWhereUniqueWithoutChannelsInput!]
 }
 
-input UserUpdateOneWithoutMessagesInput {
+input UserUpdateOneRequiredWithoutMessagesInput {
   create: UserCreateWithoutMessagesInput
   connect: UserWhereUniqueInput
-  delete: Boolean
   update: UserUpdateWithoutMessagesDataInput
   upsert: UserUpsertWithoutMessagesInput
 }
 
 input UserUpdateWithoutChannelsDataInput {
   email: String
+  phoneNumber: String
+  deactivated: Boolean
   messages: MessageUpdateManyWithoutAuthorInput
 }
 
 input UserUpdateWithoutMessagesDataInput {
   email: String
+  phoneNumber: String
+  deactivated: Boolean
   channels: ChannelUpdateManyWithoutUsersInput
 }
 
@@ -874,6 +907,50 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   email_not_ends_with: String
+  phoneNumber: String
+
+  """All values that are not equal to given value."""
+  phoneNumber_not: String
+
+  """All values that are contained in given list."""
+  phoneNumber_in: [String!]
+
+  """All values that are not contained in given list."""
+  phoneNumber_not_in: [String!]
+
+  """All values less than the given value."""
+  phoneNumber_lt: String
+
+  """All values less than or equal the given value."""
+  phoneNumber_lte: String
+
+  """All values greater than the given value."""
+  phoneNumber_gt: String
+
+  """All values greater than or equal the given value."""
+  phoneNumber_gte: String
+
+  """All values containing the given string."""
+  phoneNumber_contains: String
+
+  """All values not containing the given string."""
+  phoneNumber_not_contains: String
+
+  """All values starting with the given string."""
+  phoneNumber_starts_with: String
+
+  """All values not starting with the given string."""
+  phoneNumber_not_starts_with: String
+
+  """All values ending with the given string."""
+  phoneNumber_ends_with: String
+
+  """All values not ending with the given string."""
+  phoneNumber_not_ends_with: String
+  deactivated: Boolean
+
+  """All values that are not equal to given value."""
+  deactivated_not: Boolean
   channels_every: ChannelWhereInput
   channels_some: ChannelWhereInput
   channels_none: ChannelWhereInput

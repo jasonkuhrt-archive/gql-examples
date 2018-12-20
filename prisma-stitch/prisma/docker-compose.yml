@@ -15,7 +15,6 @@ services:
             port: 5432
             user: prisma
             password: prisma
-            migrations: true
   postgres:
     image: postgres
     restart: always

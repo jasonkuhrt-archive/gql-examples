@@ -1,8 +1,10 @@
 type User {
   id: ID! @unique
   email: String! @unique
+  phoneNumber: String
   channels: [Channel!]!
   messages: [Message!]!
+  deactivated: Boolean! @default(value: "false")
 }
 
 type Channel {
