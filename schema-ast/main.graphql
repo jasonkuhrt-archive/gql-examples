@@ -5,3 +5,11 @@ type Human {
   b: [String]!
   c: [String!]!
 }
+
+interface I {
+  a: String
+}
+
+type Query {
+  foobar: I
+}

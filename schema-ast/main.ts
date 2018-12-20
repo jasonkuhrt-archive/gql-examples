@@ -17,3 +17,7 @@ const ast = GQL.buildASTSchema(GQL.parse(sdl))
 log.success("parse into AST\n\n%s\n", inspect(ast))
 
 log.success("Human\n\n%s\n", inspect(ast.getType("Human").astNode))
+
+log.success("Query\n\n%s\n", inspect(ast.getQueryType().astNode))
+
+log.success("I\n\n%s\n", inspect(ast.getType("I").astNode))
